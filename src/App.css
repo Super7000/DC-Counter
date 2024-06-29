@@ -1,0 +1,38 @@
+.table {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.5rem;
+    width: 90%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.column {
+    display: grid;
+    grid-template-rows: repeat(8, auto);
+    gap: 1rem;
+    text-align: center;
+    align-items: start;
+    align-content: start;
+    font-weight: bold;
+    justify-content: center;
+}
+
+.total-count {
+    padding: 0.6rem 0rem;
+    border-radius: 8px;
+}
+
+
+@media (max-width: 768px) {
+    .table {
+        gap: 0.5rem;
+        width: 95%;
+    }
+    
+}
