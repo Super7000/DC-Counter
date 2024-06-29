@@ -34,5 +34,87 @@
         gap: 0.5rem;
         width: 95%;
     }
-    
+
+}
+
+.save-data-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 10;
+    transform: translate(0, -100%);
+    transition: 0.5s;
+    display: none;
+}
+
+.save-data-view.active {
+    transform: translate(-0, -0);
+    display: grid;
+}
+
+.save-data-view .top {
+    height: 3rem;
+    width: 3rem;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.save-data-view .top .close-btn {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.save-data-view .top .close-btn:hover {
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.save-data-view .main-container {
+    margin-left: 2rem;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+}
+
+.save-data-view .main-container .head,
+.save-data-view .main-container .data-table .data-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.save-data-view .main-container .head {
+    height: 3rem;
+}
+
+.save-data-view .main-container .data-table .data {
+    display: grid;
+    align-items: start;
+    gap: 0.5rem;
+    height: 75vh;
+    overflow-x: scroll;
+}
+
+.save-data-view .main-container .data-table .data-row div {
+    height: 100%;
+    background: rgba(30, 143, 255, 0.05);
+    border-radius: 0.5rem;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
 }

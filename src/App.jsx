@@ -1,14 +1,17 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 function App() {
     const [totalCount, setTotalCount] = useState(0)
     const [compressText, setCompressText] = useState(false)
+    const [showSaves, setShowSaves] = useState(false)
+
     const neuClearFunc = useRef()
     const eosClearFunc = useRef()
     const monClearFunc = useRef()
     const basClearFunc = useRef()
     const lymClearFunc = useRef()
+
     function clear() {
         neuClearFunc.current()
         eosClearFunc.current()
@@ -17,6 +20,7 @@ function App() {
         lymClearFunc.current()
         setTotalCount(0)
     }
+
     window.onresize = () => {
         if (window.innerWidth < 760) {
             setCompressText(true)
@@ -26,13 +30,15 @@ function App() {
     }
     return (
         <>
+            <SaveDataView showSaves={showSaves} setShowSaves={setShowSaves} />
+
             <div className='table'>
                 <Column name="Neutrophils" totalCount={totalCount} setTotalCount={setTotalCount} clear={neuClearFunc} compressText={compressText} />
                 <Column name="Eoshinophils" totalCount={totalCount} setTotalCount={setTotalCount} clear={eosClearFunc} compressText={compressText} />
                 <Column name="Monocytes" totalCount={totalCount} setTotalCount={setTotalCount} clear={monClearFunc} compressText={compressText} />
                 <Column name="Basophils" totalCount={totalCount} setTotalCount={setTotalCount} clear={basClearFunc} compressText={compressText} />
                 <Column name="Lymphocyte" totalCount={totalCount} setTotalCount={setTotalCount} clear={lymClearFunc} compressText={compressText} />
-                
+
                 <Utilitys clear={clear} totalCount={totalCount} setShowSaves={setShowSaves} />
             </div>
         </>
@@ -41,6 +47,7 @@ function App() {
 
 function Column({ name, totalCount, setTotalCount, clear, compressText = false }) {
     const [count, setCount] = useState(0)
+
     function btnClickHandler(incermentValue) {
         incermentValue = parseInt(incermentValue)
         if (count + incermentValue < 0) return
@@ -116,7 +123,7 @@ function Utilitys({ clear, totalCount = 0, setShowSaves }) {
                 savedData.push(currentData)
                 localStorage.setItem('cellCount', JSON.stringify(savedData))
             }}>Save</button>
-            <button>View Save</button>
+            <button onClick={() => { setShowSaves(val => !val) }}>View Save</button>
             <button onClick={() => {
                 if (confirm('Are you sure you want to clear all saves?'))
                     localStorage.clear()
@@ -125,5 +132,64 @@ function Utilitys({ clear, totalCount = 0, setShowSaves }) {
     )
 }
 
+function SaveDataView({ showSaves, setShowSaves }) {
+    const [data, setData] = useState(JSON.parse(localStorage.getItem('cellCount')))
+    useEffect(() => {
+        setData(JSON.parse(localStorage.getItem('cellCount')))
+    }, [showSaves])
+    return (
+        <div className={'save-data-view' + (showSaves ? ' active' : '')}>
+            <div className='top'>
+                <div className='close-btn' onClick={() => setShowSaves(false)}>+</div>
+            </div>
+            <div className='main-container'>
+                <h1 style={{ marginBottom: 0 }}>Saved Data</h1>
+                <div className='data-table'>
+                    {(data === null || data.length <= 0) ?
+                        (<h3 style={{ justifyContent: 'center', display: 'grid' }}>No Data Saved</h3>) :
+                        (<>
+                            <div className='head'>
+                                <h4>Neutrophils</h4>
+                                <h4>Eoshinophils</h4>
+                                <h4>Monocytes</h4>
+                                <h4>Basophils</h4>
+                                <h4>Lymphocyte</h4>
+                                <h4></h4>
+                            </div>
+                            <div className='data'>
+                                {data.map((singleData, index) => <Data key={index} index={index} data={singleData} setData={setData} />)}
+                            </div>
+                        </>)
+                    }
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function Data({ index, data = [], setData }) {
+    let total = parseInt(data[0]) + parseInt(data[1]) + parseInt(data[2]) + parseInt(data[3]) + parseInt(data[4])
+    return (
+        <div className='data-row'>
+            <div>{data[0]}|{total === 0 ? '0.00' : ((parseInt(data[0]) / total) * 100).toFixed(2)}%</div>
+            <div>{data[1]}|{total === 0 ? '0.00' : ((parseInt(data[1]) / total) * 100).toFixed(2)}%</div>
+            <div>{data[2]}|{total === 0 ? '0.00' : ((parseInt(data[2]) / total) * 100).toFixed(2)}%</div>
+            <div>{data[3]}|{total === 0 ? '0.00' : ((parseInt(data[3]) / total) * 100).toFixed(2)}%</div>
+            <div>{data[4]}|{total === 0 ? '0.00' : ((parseInt(data[4]) / total) * 100).toFixed(2)}%</div>
+            <div className='clear-btn-container'>
+                <button onClick={() => {
+                    try {
+                        let savedData = JSON.parse(localStorage.getItem('cellCount'))
+                        savedData.splice(index, 1)
+                        localStorage.setItem('cellCount', JSON.stringify(savedData))
+                        setData(savedData)
+                    } catch {
+                        alert('Something went wrong')
+                    }
+                }}>Clear</button>
+            </div>
+        </div>
+    )
+}
 
 export default App
