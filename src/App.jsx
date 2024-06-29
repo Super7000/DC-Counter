@@ -4,6 +4,7 @@ import './App.css'
 function App() {
     const [totalCount, setTotalCount] = useState(0)
     const [compressText, setCompressText] = useState(false)
+    const [compressTextForSaveView, setCompressTextForSaveView] = useState(false)
     const [showSaves, setShowSaves] = useState(false)
 
     const neuClearFunc = useRef()
@@ -22,15 +23,25 @@ function App() {
     }
 
     window.onresize = () => {
+        checkWidth()
+    }
+    function checkWidth() {
         if (window.innerWidth < 760) {
             setCompressText(true)
         } else {
             setCompressText(false)
         }
+
+        if (window.innerWidth < 670) {
+            setCompressTextForSaveView(true)
+        } else {
+            setCompressTextForSaveView(false)
+        }
     }
+    window.onload = () => { checkWidth() }
     return (
         <>
-            <SaveDataView showSaves={showSaves} setShowSaves={setShowSaves} />
+            <SaveDataView showSaves={showSaves} setShowSaves={setShowSaves} compressText={setCompressTextForSaveView} />
 
             <div className='table'>
                 <Column name="Neutrophils" totalCount={totalCount} setTotalCount={setTotalCount} clear={neuClearFunc} compressText={compressText} />
@@ -132,7 +143,7 @@ function Utilitys({ clear, totalCount = 0, setShowSaves }) {
     )
 }
 
-function SaveDataView({ showSaves, setShowSaves }) {
+function SaveDataView({ showSaves, setShowSaves, compressText }) {
     const [data, setData] = useState(JSON.parse(localStorage.getItem('cellCount')))
     useEffect(() => {
         setData(JSON.parse(localStorage.getItem('cellCount')))
@@ -149,11 +160,11 @@ function SaveDataView({ showSaves, setShowSaves }) {
                         (<h3 style={{ justifyContent: 'center', display: 'grid' }}>No Data Saved</h3>) :
                         (<>
                             <div className='head'>
-                                <h4>Neutrophils</h4>
-                                <h4>Eoshinophils</h4>
-                                <h4>Monocytes</h4>
-                                <h4>Basophils</h4>
-                                <h4>Lymphocyte</h4>
+                                <h4>{compressText ? 'Neu..' : 'Neutrophils'}</h4>
+                                <h4>{compressText ? 'Eos..' : 'Eoshinophils'}</h4>
+                                <h4>{compressText ? 'Mon..' : 'Monocytes'}</h4>
+                                <h4>{compressText ? 'Bas..' : 'Basophils'}</h4>
+                                <h4>{compressText ? 'Lym..' : 'Lymphocyte'}</h4>
                                 <h4></h4>
                             </div>
                             <div className='data'>
