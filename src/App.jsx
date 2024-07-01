@@ -67,7 +67,10 @@ function Column({ name, totalCount, setTotalCount, clear, compressText = false }
     }
     let percentage = 0.0
     if (totalCount > 0) percentage = (count / totalCount) * 100
-    clear.current = () => setCount(0)
+    clear.current = () => {
+        setTotalCount(totalCount - count)
+        setCount(0)
+    }
     return (
         <div className='column'>
             <div style={{ wordBreak: 'break-all' }} title={name} >{compressText ? name.slice(0, 3) + ".." : name}</div>
